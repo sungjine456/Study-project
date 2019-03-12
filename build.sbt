@@ -1,7 +1,16 @@
 name := "StudyProject"
 
-version := "0.1"
+lazy val rootProject = project.in(file("."))
+  .aggregate(jvm, js, shared)
+  .dependsOn(jvm, js, shared)
 
-scalaVersion := "2.12.6"
+lazy val jvm = project.in(file("jvm"))
+  .settings(name := "Study JVM")
+  .dependsOn(shared)
 
-libraryDependencies ++= Seq("org.scalatest" %% "scalatest" % "3.0.4" % "test")
+lazy val js = project.in(file("js"))
+  .settings(name := "Study JS"  )
+  .dependsOn(shared)
+
+lazy val shared = project.in(file("shared"))
+  .settings()
