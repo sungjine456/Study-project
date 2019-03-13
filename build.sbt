@@ -17,12 +17,14 @@ lazy val jvm = studyProject.jvm
   .settings(name := "study-jvm")
   .settings(
     scalaJSProjects := Seq(studyProject.js),
-    libraryDependencies ++= Seq()
+    libraryDependencies ++= Seq(guice)
   )
 
 lazy val js = studyProject.js
   .enablePlugins(ScalaJSPlay)
-  .settings(name := "study-js")
+  .settings(
+      name := "study-js",
+      libraryDependencies ++= Seq(guice))
 
 lazy val studyProject = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Full)
