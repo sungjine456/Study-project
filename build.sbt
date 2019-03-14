@@ -1,3 +1,4 @@
+import org.scalajs.sbtplugin.ScalaJSCrossVersion
 import sbtcrossproject.CrossPlugin.autoImport.{ crossProject, CrossType }
 
 scalaVersion in ThisBuild := "2.12.6"
@@ -17,14 +18,19 @@ lazy val jvm = studyProject.jvm
   .settings(name := "study-jvm")
   .settings(
     scalaJSProjects := Seq(studyProject.js),
-    libraryDependencies ++= Seq(guice)
+    libraryDependencies ++= Seq(
+      guice,
+      "org.scalatest" %% "scalatest" % "3.2.0-SNAP7" % "test")
   )
 
 lazy val js = studyProject.js
   .enablePlugins(ScalaJSPlay)
   .settings(
       name := "study-js",
-      libraryDependencies ++= Seq(guice))
+      parallelExecution := false,
+      libraryDependencies ++= Seq(
+        guice,
+        "org.scalatest" %% "scalatest" % "3.2.0-SNAP7" % "test" cross ScalaJSCrossVersion.binary))
 
 lazy val studyProject = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Full)
