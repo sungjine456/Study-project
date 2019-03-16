@@ -1,16 +1,23 @@
 package study.controllers
 
-import javax.inject._
+import scala.concurrent.ExecutionContext
+
+import play.api.Environment
 import play.api.mvc._
 
-import study.MyLibrary
+import javax.inject._
+import study.user.UserServiceImpl
 
 @Singleton
-class HomeController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+class HomeController @Inject()(implicit ec: ExecutionContext,
+  cc: ControllerComponents,
+  userService: UserServiceImpl,
+  env: Environment)
+  extends AbstractController(cc) {
 
-  def index = Action {
-    val library = new MyLibrary
-
-    Ok(views.html.index(library.value.toString))
+  def index: Action[AnyContent] = Action async {
+    userService.findAll() map { users =>
+      Ok(views.html.index(users.length.toString))
+    }
   }
 }
