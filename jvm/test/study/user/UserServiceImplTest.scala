@@ -1,14 +1,35 @@
 package study.user
 
-import org.scalatest.FlatSpec
+import scala.concurrent.{ Await, Future }
+import scala.concurrent.duration.Duration
 
-class UserServiceImplTest extends FlatSpec {
+import play.api.Application
+import play.api.test.{ PlaySpecification, WithApplication }
 
-  "create(title: String, password: String)" should "succeed" in {
-    fail()
+class UserServiceImplTest extends PlaySpecification {
+  def userService(implicit app: Application) = Application.instanceCache[UserServiceImpl].apply(app)
+
+  def await(v: Future[User]): User = Await.result(v, Duration.Inf)
+
+  "create(id: String, password: String)" should {
+    "succeed" in new WithApplication() {
+      val beforeFindAll: Seq[User] = await(userService.findAll())
+
+      beforeFindAll.length === 0
+
+      await(userService.create("id", "pass"))
+
+      val afterFindAll: Seq[User] = await(userService.findAll())
+
+      afterFindAll.length === 1
+    }
   }
 
-  "findAll()" should "succeed" in {
-    fail()
+  "findAll()" should {
+    "succeed" in new WithApplication() {
+      val result: Seq[User] = await(userService.findAll())
+
+      result.length === 0
+    }
   }
 }

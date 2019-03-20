@@ -17,11 +17,11 @@ class UserServiceImpl @Inject() (dao: UserDao) extends UserService  {
     }
   }
 
-  def create(title: String, password: String): Future[User] = {
+  def create(id: String, password: String): Future[User] = {
     db run {
-      val rows = users returning users.map(_.id) into ((item, id) => item.copy(id = id))
+      val rows = users returning users.map(_.idx) into((user, idx) => user.copy(idx = idx))
 
-      rows += User(0, title, password)
+      rows += User(0, id, password)
     }
   }
 }
