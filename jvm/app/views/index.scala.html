@@ -1,9 +1,15 @@
-@(message: String)
+@(title: String)
 <HTML>
     <HEAD>
-        <TITLE>Hello World</TITLE>
+        <TITLE>@(title)</TITLE>
     </HEAD>
     <BODY>
-        @(message)
+        <FORM action="/user/login" method="post">
+            <LABEL for="id">ID : </LABEL>
+            <INPUT type="text" name="id" id="id">
+            <LABEL for="password">Password : </LABEL>
+            <INPUT type="password" name="password" id="password">
+            <BUTTON type="submit">Sign up</BUTTON>
+        </FORM>
     </BODY>
 </HTML>
