@@ -3,8 +3,8 @@ package study.user
 import scala.concurrent.ExecutionContext
 
 import play.api.Environment
-import play.api.data._
 import play.api.data.Forms._
+import play.api.data._
 import play.api.mvc.{ AbstractController, Action, AnyContent, ControllerComponents }
 
 import javax.inject.{ Inject, Singleton }
@@ -24,6 +24,12 @@ class UserRoutes @Inject()(implicit ec: ExecutionContext,
     userService.create(user.id, user.password)
 
     Ok("registered")
+  }
+
+  def findAll: Action[AnyContent] = Action.async {
+    userService.findAll map { users =>
+      Ok(views.html.users(users))
+    }
   }
 }
 

@@ -1,0 +1,10 @@
+@import study.user.User
+
+@(users: Seq[User])
+
+<ul>
+    <li>ID</li>
+    @for(user <- users) {
+        <li>@user.id</li>
+    }
+</ul>
