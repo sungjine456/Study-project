@@ -1,7 +1,6 @@
 package study.user
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.{ Await, ExecutionContext }
+import scala.concurrent.ExecutionContext
 
 import play.api.Environment
 import play.api.data._
@@ -23,8 +22,6 @@ class UserRoutes @Inject()(implicit ec: ExecutionContext,
     val user = userRegisteredForm.bindFromRequest.get
 
     userService.create(user.id, user.password)
-
-    println(Await.result(userService.findAll(), Duration.Inf))
 
     Ok("registered")
   }
