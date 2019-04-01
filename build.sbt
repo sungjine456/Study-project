@@ -21,7 +21,8 @@ lazy val jvm = studyProject.jvm
     libraryDependencies ++= Seq(
       guice,
       specs2 % Test,
-      "com.h2database" % "h2" % "1.4.199",
+      "com.h2database" % "h2" % "1.4.199" % "test",
+      "org.postgresql" % "postgresql" % "42.2.5",
       "com.typesafe.play" %% "play-slick" % "4.0.0",
       "com.typesafe.play" %% "play-slick-evolutions" % "4.0.0",
       "org.scalatest" %% "scalatest" % "3.2.0-SNAP7" % "test")
