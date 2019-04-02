@@ -18,7 +18,7 @@ class UserDao @Inject()(val dbConfigProvider: DatabaseConfigProvider)(implicit e
 
   class Schema(tag: Tag) extends Table[User](tag, "User") {
 
-    def idx = column[Long]("idx", O.AutoInc, O.PrimaryKey)
+    def idx = column[Long]("idx", O.PrimaryKey)
 
     def id = column[String]("id")
 
