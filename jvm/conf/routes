@@ -1,6 +1,7 @@
 # Routes
 GET     /                           study.controllers.HomeController.index
 
+GET     /user/:id                   study.user.UserRoutes.findById(id: String)
 POST    /user/login                 study.user.UserRoutes.registered
 
 GET     /users                      study.user.UserRoutes.findAll

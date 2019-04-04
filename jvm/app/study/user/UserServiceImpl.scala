@@ -18,6 +18,12 @@ class UserServiceImpl @Inject()(dao: UserDao, databaseSupport: SequenceService)(
     }
   }
 
+  def findById(id: String): Future[User] = {
+    db run {
+      users.filter(_.id === id).result.head
+    }
+  }
+
   def create(id: String, password: String): Future[User] = {
     for {
       idx <- databaseSupport.nextValue("User")

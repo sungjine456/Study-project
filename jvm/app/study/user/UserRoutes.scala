@@ -26,6 +26,12 @@ class UserRoutes @Inject()(implicit ec: ExecutionContext,
     Ok("registered")
   }
 
+  def findById(id: String): Action[AnyContent] = Action.async {
+    userService.findById(id) map { user =>
+      Ok(user.toString)
+    }
+  }
+
   def findAll: Action[AnyContent] = Action.async {
     userService.findAll map { users =>
       Ok(views.html.users(users))
