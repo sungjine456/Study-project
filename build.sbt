@@ -20,8 +20,8 @@ lazy val jvm = studyProject.jvm
     scalaJSProjects := Seq(studyProject.js),
     libraryDependencies ++= Seq(
       guice,
+      jdbc % Test,
       specs2 % Test,
-      "com.h2database" % "h2" % "1.4.199" % "test",
       "org.postgresql" % "postgresql" % "42.2.5",
       "com.typesafe.play" %% "play-slick" % "4.0.0",
       "com.typesafe.play" %% "play-slick-evolutions" % "4.0.0",
