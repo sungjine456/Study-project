@@ -4,14 +4,25 @@ import java.sql.ResultSet
 
 import scala.language.postfixOps
 
-import org.scalatest.FlatSpec
+import org.scalatest.{ BeforeAndAfter, FlatSpec }
 
-class SequenceServiceTest extends FlatSpec with DatabaseSupport {
+class SequenceServiceTest extends FlatSpec with DatabaseSupport with BeforeAndAfter {
 
-  val createSequenceTableQuery = """CREATE TABLE "Sequence" (
+  private val connection = database.getConnection()
+
+  before {
+    val createSequenceTableQuery = """CREATE TABLE "Sequence" (
                                      "id"    VARCHAR(20) PRIMARY KEY NOT NULL,
                                      "value" NUMERIC                  NOT NULL
                                    );"""
+
+    connection.prepareStatement(createSequenceTableQuery).execute()
+  }
+
+  after {
+    val dropSequenceTableQuery = """DROP TABLE "Sequence""""
+    connection.prepareStatement(dropSequenceTableQuery).execute()
+  }
 
   val insertSequenceValueQuery = """INSERT INTO "Sequence" ("id", "value") VALUES ('User', 1);"""
 
@@ -20,7 +31,6 @@ class SequenceServiceTest extends FlatSpec with DatabaseSupport {
   "test" should "h2 database" in {
     val connection = database.getConnection()
 
-    connection.prepareStatement(createSequenceTableQuery).execute()
     connection.prepareStatement(insertSequenceValueQuery).execute()
 
     def selectQuery: ResultSet = connection.prepareStatement("select \"value\" from \"Sequence\" where \"id\" = 'User'").executeQuery()
