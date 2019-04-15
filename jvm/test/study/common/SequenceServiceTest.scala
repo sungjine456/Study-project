@@ -28,7 +28,7 @@ class SequenceServiceTest extends FlatSpec with DatabaseSupport with BeforeAndAf
 
   def updateSequenceValueQuery(value: Int) = s"""UPDATE "Sequence" SET VALUE = ($value + 1) WHERE "id" = "User";"""
 
-  "test" should "h2 database" in {
+  "Sequence value" should "increases" in {
     val connection = database.getConnection()
 
     connection.prepareStatement(insertSequenceValueQuery).execute()
