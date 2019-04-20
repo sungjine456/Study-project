@@ -1,48 +1,42 @@
 package study.common
 
-import java.sql.ResultSet
-
+import scala.concurrent.ExecutionContext
 import scala.language.postfixOps
 
-import org.scalatest.{ BeforeAndAfter, FlatSpec }
+import play.api.db.slick.DatabaseConfigProvider
+import play.api.inject.Injector
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.test.{ PlaySpecification, WithApplication }
+import play.api.{ Application, Configuration, Mode }
 
-class SequenceServiceTest extends FlatSpec with DatabaseSupport with BeforeAndAfter {
+import com.typesafe.config.ConfigFactory
 
-  private val connection = database.getConnection()
+class SequenceServiceTest extends PlaySpecification {
 
-  before {
-    val createSequenceTableQuery = """CREATE TABLE "Sequence" (
-                                     "id"    VARCHAR(20) PRIMARY KEY NOT NULL,
-                                     "value" NUMERIC                  NOT NULL
-                                   );"""
+  val application: Application = GuiceApplicationBuilder()
+    .configure(Configuration(ConfigFactory.load("test.conf")))
+    .in(Mode.Test)
+    .build()
 
-    connection.prepareStatement(createSequenceTableQuery).execute()
-  }
+  "Sequence value" should {
+    "increases" in new WithApplication(application) {
+      val injector: Injector = app.injector
 
-  after {
-    val dropSequenceTableQuery = """DROP TABLE "Sequence""""
-    connection.prepareStatement(dropSequenceTableQuery).execute()
-  }
+      implicit val executionContext: ExecutionContext = injector.instanceOf[ExecutionContext]
 
-  val insertSequenceValueQuery = """INSERT INTO "Sequence" ("id", "value") VALUES ('User', 1);"""
+      val provider: DatabaseConfigProvider = injector.instanceOf[DatabaseConfigProvider]
 
-  def updateSequenceValueQuery(value: Int) = s"""UPDATE "Sequence" SET VALUE = ($value + 1) WHERE "id" = "User";"""
+      val dao = new SequenceDao(provider)
 
-  "Sequence value" should "increases" in {
-    val connection = database.getConnection()
+      val service = new SequenceService(dao)
 
-    connection.prepareStatement(insertSequenceValueQuery).execute()
+      val result1: Long = await(service.nextValue("User"))
 
-    def selectQuery: ResultSet = connection.prepareStatement("select \"value\" from \"Sequence\" where \"id\" = 'User'").executeQuery()
+      result1 == 1L
 
-    val result1 = selectQuery
-    result1.next()
-    result1.getInt("value") == 1
+      val result2: Long = await(service.nextValue("User"))
 
-    connection.prepareStatement(updateSequenceValueQuery(1))
-
-    val result2 = selectQuery
-    result2.next()
-    result2.getInt("value") == 2
+      result2 == 2L
+    }
   }
 }

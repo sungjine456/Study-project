@@ -20,12 +20,12 @@ lazy val jvm = studyProject.jvm
     scalaJSProjects := Seq(studyProject.js),
     libraryDependencies ++= Seq(
       guice,
-      jdbc % Test,
       specs2 % Test,
       "org.postgresql" % "postgresql" % "42.2.5",
       "com.typesafe.play" %% "play-slick" % "4.0.0",
       "com.typesafe.play" %% "play-slick-evolutions" % "4.0.0",
-      "org.scalatest" %% "scalatest" % "3.2.0-SNAP7" % "test")
+      "org.scalatest" %% "scalatest" % "3.2.0-SNAP7" % "test",
+      "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test")
   )
 
 lazy val js = studyProject.js
