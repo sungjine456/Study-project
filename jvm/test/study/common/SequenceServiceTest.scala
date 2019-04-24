@@ -1,42 +1,25 @@
 package study.common
 
-import scala.concurrent.ExecutionContext
 import scala.language.postfixOps
 
-import play.api.db.slick.DatabaseConfigProvider
-import play.api.inject.Injector
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.{ PlaySpecification, WithApplication }
-import play.api.{ Application, Configuration, Mode }
+import org.scalatestplus.play.PlaySpec
+import study.test.DatabaseTest
 
-import com.typesafe.config.ConfigFactory
-
-class SequenceServiceTest extends PlaySpecification {
-
-  val application: Application = GuiceApplicationBuilder()
-    .configure(Configuration(ConfigFactory.load("test.conf")))
-    .in(Mode.Test)
-    .build()
+class SequenceServiceTest extends PlaySpec with DatabaseTest {
 
   "Sequence value" should {
-    "increases" in new WithApplication(application) {
-      val injector: Injector = app.injector
-
-      implicit val executionContext: ExecutionContext = injector.instanceOf[ExecutionContext]
-
-      val provider: DatabaseConfigProvider = injector.instanceOf[DatabaseConfigProvider]
-
+    "increases" in {
       val dao = new SequenceDao(provider)
 
       val service = new SequenceService(dao)
 
       val result1: Long = await(service.nextValue("User"))
 
-      result1 == 1L
+      result1 === 1L
 
       val result2: Long = await(service.nextValue("User"))
 
-      result2 == 2L
+      result2 === 2L
     }
   }
 }
