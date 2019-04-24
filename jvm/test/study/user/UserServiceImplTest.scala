@@ -7,9 +7,9 @@ import study.test.DatabaseTest
 
 class UserServiceImplTest extends PlaySpec with BeforeAndAfter with DatabaseTest {
 
-  before {
-    val dao = new UserDao(provider)
+  val dao = new UserDao(provider)
 
+  before {
     import dao.dbConfig.db
     import dao.dbConfig.profile.api._
     import dao.users
@@ -19,15 +19,10 @@ class UserServiceImplTest extends PlaySpec with BeforeAndAfter with DatabaseTest
     }
   }
 
-  after {
-  }
-
-  def service: UserService = {
+  val service: UserService = {
     val sequenceDao = new SequenceDao(provider)
 
     val sequenceService = new SequenceService(sequenceDao)
-
-    val dao = new UserDao(provider)
 
     new UserServiceImpl(dao, sequenceService)
   }
@@ -37,13 +32,13 @@ class UserServiceImplTest extends PlaySpec with BeforeAndAfter with DatabaseTest
 
       val beforeFindAll: Seq[User] = await(service.findAll())
 
-      beforeFindAll.length === 0
+      beforeFindAll.length mustBe 0
 
       await(service.create("id", "pass"))
 
       val afterFindAll: Seq[User] = await(service.findAll())
 
-      afterFindAll.length === 1
+      afterFindAll.length mustBe 1
     }
   }
 
@@ -51,7 +46,7 @@ class UserServiceImplTest extends PlaySpec with BeforeAndAfter with DatabaseTest
     "succeed" in {
       val result: Seq[User] = await(service.findAll())
 
-      result.length === 0
+      result.length mustBe 0
     }
   }
 }
